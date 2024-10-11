@@ -1,4 +1,5 @@
 #include "matrixinput.h"
+#include <Eigen/Dense>
 
 const int LE_WIDTH = 30;
 const int LE_HEIGHT = 30;
@@ -58,14 +59,14 @@ void MatrixInput::colChange(const QString &newCols)
     setDims(m_rows, newCols.toInt());
 }
 
-Matrix MatrixInput::readMatrix() {
-    Matrix m(m_rows, m_cols);
+Eigen::MatrixXd MatrixInput::readMatrix() {
+    Eigen::MatrixXd matrix(m_rows, m_cols);
+
     for (int i=0; i<m_rows; i++) {
         for (int j=0; j<m_cols; j++) {
-            int val = m_line_edits[i][j]->text().toInt();
-            m.setElement(i, j, val);
+            matrix(i,j) = m_line_edits[i][j]->text().toDouble();
         }
     }
 
-    return m;
+    return matrix;
 }

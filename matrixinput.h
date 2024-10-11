@@ -5,7 +5,7 @@
 #include <QGridLayout>
 #include <QLineEdit>
 #include <QVector>
-#include "matrix.h"
+#include <Eigen/Dense>
 
 int const MAX_DIM = 5;
 
@@ -15,7 +15,7 @@ class MatrixInput : public QWidget
 public:
     MatrixInput(QWidget *parent);
     void setDims(int newRows, int newCols);
-    Matrix readMatrix();
+    Eigen::MatrixXd readMatrix();
 
 private:
     int m_rows;

@@ -17,7 +17,7 @@ CXX           = g++
 DEFINES       = -DQT_QML_DEBUG -DQT_WIDGETS_LIB -DQT_GUI_LIB -DQT_CORE_LIB
 CFLAGS        = -pipe -g -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
 CXXFLAGS      = -pipe -g -std=gnu++1z -Wall -Wextra -fPIC -D_REENTRANT $(DEFINES)
-INCPATH       = -I../../../MatrixCalculator -I. -I../../../Qt/6.7.3/gcc_64/include -I../../../Qt/6.7.3/gcc_64/include/QtWidgets -I../../../Qt/6.7.3/gcc_64/include/QtGui -I../../../Qt/6.7.3/gcc_64/include/QtCore -I. -I. -I../../../Qt/6.7.3/gcc_64/mkspecs/linux-g++
+INCPATH       = -I../../../MatrixCalculator -I. -I/usr/include/eigen3 -I../../../Qt/6.7.3/gcc_64/include -I../../../Qt/6.7.3/gcc_64/include/QtWidgets -I../../../Qt/6.7.3/gcc_64/include/QtGui -I../../../Qt/6.7.3/gcc_64/include/QtCore -I. -I. -I../../../Qt/6.7.3/gcc_64/mkspecs/linux-g++
 QMAKE         = /home/miloje/Qt/6.7.3/gcc_64/bin/qmake
 DEL_FILE      = rm -f
 CHK_DIR_EXISTS= test -d
@@ -55,7 +55,6 @@ OBJECTS_DIR   = ./
 SOURCES       = ../../buttons.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../matrix.cpp \
 		../../matrixdisplay.cpp \
 		../../matrixinput.cpp moc_buttons.cpp \
 		moc_mainwindow.cpp \
@@ -64,7 +63,6 @@ SOURCES       = ../../buttons.cpp \
 OBJECTS       = buttons.o \
 		main.o \
 		mainwindow.o \
-		matrix.o \
 		matrixdisplay.o \
 		matrixinput.o \
 		moc_buttons.o \
@@ -293,12 +291,11 @@ DIST          = /Qt/6.7.3/gcc_64/mkspecs/features/spec_pre.prf \
 		/Qt/6.7.3/gcc_64/mkspecs/features/lex.prf \
 		../../../../MatrixCalculator.pro ../../buttons.h \
 		../../mainwindow.h \
-		../../matrix.h \
 		../../matrixdisplay.h \
-		../../matrixinput.h ../../buttons.cpp \
+		../../matrixinput.h \
+		../../utils.h ../../buttons.cpp \
 		../../main.cpp \
 		../../mainwindow.cpp \
-		../../matrix.cpp \
 		../../matrixdisplay.cpp \
 		../../matrixinput.cpp
 QMAKE_TARGET  = MatrixCalculator
@@ -776,8 +773,8 @@ distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
 	$(COPY_FILE) --parents ../../../Qt/6.7.3/gcc_64/mkspecs/features/data/dummy.cpp $(DISTDIR)/
-	$(COPY_FILE) --parents ../../buttons.h ../../mainwindow.h ../../matrix.h ../../matrixdisplay.h ../../matrixinput.h $(DISTDIR)/
-	$(COPY_FILE) --parents ../../buttons.cpp ../../main.cpp ../../mainwindow.cpp ../../matrix.cpp ../../matrixdisplay.cpp ../../matrixinput.cpp $(DISTDIR)/
+	$(COPY_FILE) --parents ../../buttons.h ../../mainwindow.h ../../matrixdisplay.h ../../matrixinput.h ../../utils.h $(DISTDIR)/
+	$(COPY_FILE) --parents ../../buttons.cpp ../../main.cpp ../../mainwindow.cpp ../../matrixdisplay.cpp ../../matrixinput.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../../mainwindow.ui $(DISTDIR)/
 
 
@@ -1009,7 +1006,7 @@ moc_buttons.cpp: ../../buttons.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qboxlayout.h \
 		moc_predefs.h \
 		../../../Qt/6.7.3/gcc_64/libexec/moc
-	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../buttons.h -o moc_buttons.cpp
+	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/usr/include/eigen3 -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../buttons.h -o moc_buttons.cpp
 
 moc_mainwindow.cpp: ../../mainwindow.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QMainWindow \
@@ -1220,14 +1217,13 @@ moc_mainwindow.cpp: ../../mainwindow.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qlineedit.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		../../buttons.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qpushbutton.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qabstractbutton.h \
 		moc_predefs.h \
 		../../../Qt/6.7.3/gcc_64/libexec/moc
-	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
+	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/usr/include/eigen3 -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../mainwindow.h -o moc_mainwindow.cpp
 
 moc_matrixdisplay.cpp: ../../matrixdisplay.h \
 		../../matrixinput.h \
@@ -1431,10 +1427,9 @@ moc_matrixdisplay.cpp: ../../matrixdisplay.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		moc_predefs.h \
 		../../../Qt/6.7.3/gcc_64/libexec/moc
-	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../matrixdisplay.h -o moc_matrixdisplay.cpp
+	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/usr/include/eigen3 -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../matrixdisplay.h -o moc_matrixdisplay.cpp
 
 moc_matrixinput.cpp: ../../matrixinput.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QWidget \
@@ -1637,10 +1632,9 @@ moc_matrixinput.cpp: ../../matrixinput.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		moc_predefs.h \
 		../../../Qt/6.7.3/gcc_64/libexec/moc
-	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../matrixinput.h -o moc_matrixinput.cpp
+	/home/miloje/Qt/6.7.3/gcc_64/libexec/moc $(DEFINES) --include /home/miloje/MatrixCalculator/build/Desktop_Qt_6_7_3-Debug/moc_predefs.h -I/home/miloje/Qt/6.7.3/gcc_64/mkspecs/linux-g++ -I/home/miloje/MatrixCalculator -I/usr/include/eigen3 -I/home/miloje/Qt/6.7.3/gcc_64/include -I/home/miloje/Qt/6.7.3/gcc_64/include/QtWidgets -I/home/miloje/Qt/6.7.3/gcc_64/include/QtGui -I/home/miloje/Qt/6.7.3/gcc_64/include/QtCore -I. -I/usr/include/c++/9 -I/usr/include/x86_64-linux-gnu/c++/9 -I/usr/include/c++/9/backward -I/usr/lib/gcc/x86_64-linux-gnu/9/include -I/usr/local/include -I/usr/include/x86_64-linux-gnu -I/usr/include ../../matrixinput.h -o moc_matrixinput.cpp
 
 compiler_moc_objc_header_make_all:
 compiler_moc_objc_header_clean:
@@ -2068,7 +2062,6 @@ main.o: ../../main.cpp ../../mainwindow.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qlineedit.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		../../buttons.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qpushbutton.h \
@@ -2286,7 +2279,6 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qlineedit.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		../../buttons.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QPushButton \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qpushbutton.h \
@@ -2312,92 +2304,10 @@ mainwindow.o: ../../mainwindow.cpp ../../mainwindow.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qstyle.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qtabbar.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qabstractitemmodel.h
+		../../../Qt/6.7.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../utils.h \
+		../../../Qt/6.7.3/gcc_64/include/QtCore/QString
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../../mainwindow.cpp
-
-matrix.o: ../../matrix.cpp ../../matrix.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qlist.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qarraydatapointer.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qarraydataops.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qarraydata.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qpair.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qcontainerfwd.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtconfigmacros.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtconfiginclude.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qconfig.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtcore-config.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtypes.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qprocessordetection.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qassert.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qcompilerdetection.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qsystemdetection.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtcoreexports.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtdeprecationmarkers.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtversionchecks.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtnoop.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qglobal.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtpreprocessorsupport.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtversion.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtclasshelpermacros.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtypeinfo.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qsysinfo.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qlogging.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qflags.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qcompare_impl.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qatomic.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qbasicatomic.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qatomic_cxx11.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qgenericatomic.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qyieldcpu.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qconstructormacros.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qdarwinhelpers.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qexceptionhandling.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qforeach.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qttypetraits.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qfunctionpointer.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qglobalstatic.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qmalloc.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qminmax.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qnumeric.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qoverload.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qswap.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtenvironmentvariables.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtresource.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qttranslation.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qversiontagging.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qcontainertools_impl.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qxptype_traits.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/q20type_traits.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/q20functional.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/q20memory.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qnamespace.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qtmetamacros.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qhashfunctions.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstring.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qchar.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringview.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qbytearray.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qrefcount.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qbytearrayalgorithms.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qbytearrayview.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringfwd.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringliteral.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringalgorithms.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qlatin1stringview.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qanystringview.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qutf8stringview.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringtokenizer.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringbuilder.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringconverter.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringconverter_base.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qiterator.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qbytearraylist.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringlist.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qalgorithms.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qstringmatcher.h
-	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matrix.o ../../matrix.cpp
 
 matrixdisplay.o: ../../matrixdisplay.cpp ../../matrixdisplay.h \
 		../../matrixinput.h \
@@ -2601,7 +2511,6 @@ matrixdisplay.o: ../../matrixdisplay.cpp ../../matrixdisplay.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QLabel \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qlabel.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qpicture.h \
@@ -2618,7 +2527,10 @@ matrixdisplay.o: ../../matrixdisplay.cpp ../../matrixdisplay.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qtabbar.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qtabwidget.h \
 		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qrubberband.h \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qabstractitemmodel.h
+		../../../Qt/6.7.3/gcc_64/include/QtCore/qabstractitemmodel.h \
+		../../../Qt/6.7.3/gcc_64/include/QtWidgets/QPushButton \
+		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qpushbutton.h \
+		../../../Qt/6.7.3/gcc_64/include/QtWidgets/qabstractbutton.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matrixdisplay.o ../../matrixdisplay.cpp
 
 matrixinput.o: ../../matrixinput.cpp ../../matrixinput.h \
@@ -2821,8 +2733,7 @@ matrixinput.o: ../../matrixinput.cpp ../../matrixinput.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qpen.h \
 		../../../Qt/6.7.3/gcc_64/include/QtGui/qtextoption.h \
 		../../../Qt/6.7.3/gcc_64/include/QtCore/QVector \
-		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h \
-		../../matrix.h
+		../../../Qt/6.7.3/gcc_64/include/QtCore/qvector.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o matrixinput.o ../../matrixinput.cpp
 
 moc_buttons.o: moc_buttons.cpp 

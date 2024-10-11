@@ -26,11 +26,14 @@ private:
     Buttons *m_buttons;
     QTextEdit *m_result;
 
-//jedan handler koji dobija operaciju koji sporvodi
 public slots:
     void mulClicked();
     void addClicked();
     void subClicked();
+
+    void detClicked(MatrixDisplay *md);
+    void inverseClicked(MatrixDisplay *md);
+    void tpClicked(MatrixDisplay *md);
 
 private:
     Ui::MainWindow *ui;
