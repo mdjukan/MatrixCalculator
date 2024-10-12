@@ -18,4 +18,8 @@ Buttons::Buttons(QWidget *parent) : QWidget(parent) {
     m_layout->addWidget(m_add, 0, 0, 1, 1);
     m_layout->addWidget(m_sub, 1, 0, 1, 1);
     m_layout->addWidget(m_mul, 2, 0, 1, 1);
+
+    connect(m_add, &QPushButton::clicked, this, &Buttons::addClicked);
+    connect(m_mul, &QPushButton::clicked, this, &Buttons::mulClicked);
+    connect(m_sub, &QPushButton::clicked, this, &Buttons::subClicked);
 }

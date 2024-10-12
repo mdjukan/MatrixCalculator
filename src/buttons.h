@@ -11,12 +11,16 @@ class Buttons : public QWidget
     Q_OBJECT
 public:
     Buttons(QWidget *parent=nullptr);
-public:
+private:
     QPushButton *m_add;
     QPushButton *m_mul;
     QPushButton *m_sub;
-private:
     QGridLayout *m_layout;
+public:
+signals:
+    void addClicked();
+    void mulClicked();
+    void subClicked();
 };
 
 #endif // BUTTONS_H

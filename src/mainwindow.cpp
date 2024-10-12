@@ -1,5 +1,4 @@
 #include "mainwindow.h"
-#include "ui_mainwindow.h"
 #include <QGridLayout>
 #include <QComboBox>
 #include <QTextEdit>
@@ -9,21 +8,18 @@
 #include "buttons.h"
 #include "utils.h"
 
-int const DISP_HEIGHT = 250;
+const int WINDOW_HEIGHT = 600;
+const int WINDOW_WIDTH = 700;
 
-MainWindow::MainWindow(QWidget *parent)
-    : QMainWindow(parent)
-    , ui(new Ui::MainWindow)
-{
-    ui->setupUi(this);
+MainWindow::MainWindow(QWidget *parent) : QMainWindow(parent) {
+    this->setFixedSize(WINDOW_WIDTH, WINDOW_HEIGHT);
+    this->setWindowTitle("MatrixCalcuator");
     QWidget *central_widget = new QWidget();
     QGridLayout *layout = new QGridLayout();
     central_widget->setLayout(layout);
 
     m_disp1 = new MatrixDisplay(this, "Matrix A");
-    m_disp1->setFixedHeight(DISP_HEIGHT);
     m_disp2 = new MatrixDisplay(this, "Matrix B");
-    m_disp2->setFixedHeight(DISP_HEIGHT);
 
     m_buttons = new Buttons(this);
 
@@ -33,14 +29,12 @@ MainWindow::MainWindow(QWidget *parent)
     layout->addWidget(m_disp1, 0, 0, 1, 1);
     layout->addWidget(m_buttons, 0, 1, 1, 1);
     layout->addWidget(m_disp2, 0, 2, 1, 1);
-
     layout->addWidget(m_result, 1, 0, 4, 3);
-
     setCentralWidget(central_widget);
-    //Ovo bi trebalo prepraviti da prosledjuje signale
-    connect(m_buttons->m_add, &QPushButton::clicked, this, &MainWindow::addClicked);
-    connect(m_buttons->m_sub, &QPushButton::clicked, this, &MainWindow::subClicked);
-    connect(m_buttons->m_mul, &QPushButton::clicked, this, &MainWindow::mulClicked);
+
+    connect(m_buttons, &Buttons::addClicked, this, &MainWindow::addClicked);
+    connect(m_buttons, &Buttons::subClicked, this, &MainWindow::subClicked);
+    connect(m_buttons, &Buttons::mulClicked, this, &MainWindow::mulClicked);
 
     connect(m_disp1, &MatrixDisplay::detClicked, this, &MainWindow::detClicked);
     connect(m_disp2, &MatrixDisplay::detClicked, this, &MainWindow::detClicked);
@@ -52,7 +46,6 @@ MainWindow::MainWindow(QWidget *parent)
 
 MainWindow::~MainWindow()
 {
-    delete ui;
 }
 
 void MainWindow::subClicked()
@@ -76,13 +69,14 @@ void MainWindow::detClicked(MatrixDisplay *md)
     }
 }
 
+const double EPSILON = 1e-5;
 void MainWindow::inverseClicked(MatrixDisplay *md)
 {
     Eigen::MatrixXd m = md->getMatrix();
-    if (m.rows()==m.cols()) {
+    if (m.rows()==m.cols() && abs(m.determinant())>EPSILON) {
         m_result->setText(Utils::matrixToString(m.inverse()));
     } else {
-        m_result->setText("Matrix is not square!");
+        m_result->setText("Matrix is not invertable!");
     }
 }
 

@@ -8,24 +8,21 @@ INCLUDEPATH += /usr/include/eigen3
 
 # You can make your code fail to compile if it uses deprecated APIs.
 # In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
-    buttons.cpp \
+    src/buttons.cpp \
     main.cpp \
-    mainwindow.cpp \
-    matrixdisplay.cpp \
-    matrixinput.cpp
+    src/mainwindow.cpp \
+    src/matrixdisplay.cpp \
+    src/matrixinput.cpp
 
 HEADERS += \
-    buttons.h \
-    mainwindow.h \
-    matrixdisplay.h \
-    matrixinput.h \
-    utils.h
-
-FORMS += \
-    mainwindow.ui
+    src/buttons.h \
+    src/mainwindow.h \
+    src/matrixdisplay.h \
+    src/matrixinput.h \
+    src/utils.h
 
 # Default rules for deployment.
 qnx: target.path = /tmp/$${TARGET}/bin

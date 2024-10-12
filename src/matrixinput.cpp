@@ -3,8 +3,11 @@
 
 const int LE_WIDTH = 30;
 const int LE_HEIGHT = 30;
+const int WIDTH = 200;
+const int HEIGHT = 200;
 
 MatrixInput::MatrixInput(QWidget *parent) : QWidget(parent) {
+    this->setFixedHeight(HEIGHT);
     m_layout = new QGridLayout(this);
     setLayout(m_layout);
     m_line_edits.resize(MAX_DIM);
@@ -42,7 +45,7 @@ void MatrixInput::setDims(int newRows, int newCols)
 
     for (int i=0; i<m_rows; i++) {
         for (int j=0; j<m_cols; j++) {
-            m_line_edits[i][j]->setText("");
+            m_line_edits[i][j]->setText("0");
             m_line_edits[i][j]->setFixedSize(LE_WIDTH, LE_HEIGHT);
             m_layout->addWidget(m_line_edits[i][j], i, j, 1 , 1);
         }

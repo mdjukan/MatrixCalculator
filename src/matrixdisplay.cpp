@@ -4,8 +4,11 @@
 #include <QComboBox>
 #include <QPushButton>
 
+const int DISPLAY_HEIGHT = 400;
+
 MatrixDisplay::MatrixDisplay(QWidget *parent, const QString &title) : QWidget(parent), m_title(title)
 {
+    this->setFixedHeight(DISPLAY_HEIGHT);
     m_matrix_input = new MatrixInput(this);
     QGridLayout *layout = new QGridLayout();
 
